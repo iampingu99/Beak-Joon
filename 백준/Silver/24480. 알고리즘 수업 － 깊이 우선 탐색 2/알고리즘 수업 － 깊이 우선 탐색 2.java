@@ -4,7 +4,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Main {
     static int N; // 5 ≤ N ≤ 100,000
@@ -50,9 +49,7 @@ public class Main {
 
         // 2. 내림차순 정렬
         for (int i = 1; i <= N; i++) {
-            graph[i] = graph[i].stream()
-                    .sorted(Collections.reverseOrder())
-                    .collect(Collectors.toList());
+            Collections.sort(graph[i], Collections.reverseOrder());
         }
 
         // 3. dfs
