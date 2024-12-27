@@ -7,14 +7,14 @@ public class Main {
     static int N; //  2 ≤ N ≤ 100
     static int[][] matrix; // 1 ≤ ≤ 100
     static boolean[][] visited;
-    static int height = -1;
-    static int answer = Integer.MIN_VALUE;
+    static int height = 100;
+    static int answer = 1; //비가 안오는 경우
 
     // N E S W
     static int[] dx = {0, 1, 0, -1};
     static int[] dy = {-1, 0, 1, 0};
 
-    // dfs
+    // 2차원 배열 dfs 순회(N E S W)
     static void dfs(int x, int y) {
         visited[y][x] = true;
         for (int d = 0; d < 4; d++) {
@@ -41,8 +41,8 @@ public class Main {
             }
         }
 
-        // 2. dfs
-        while (height++ < 100) {
+        // 2. dfs 순회 + 묶음 개수 찾기
+        while (height-- > 0) {
             int count = 0;
             visited = new boolean[MAX_SIZE][MAX_SIZE];
             for (int i = 1; i <= N; i++) {
