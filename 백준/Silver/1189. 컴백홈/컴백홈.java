@@ -1,13 +1,14 @@
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
+    static final int START_C = 1; //시작 지점 : (r, 1)
+    static final int END_R = 1; // 종료 지점 : (1, c)
     static final int MAX_SIZE = 5 + 2;
-    static int R;
-    static int C;
-    static int K;
+
+    static int R, C; // 1 ≤ R, C ≤ 5
+    static int K; // 1 ≤ K ≤ R×C
     static boolean[][] matrix;
     static int answer;
 
@@ -18,7 +19,7 @@ public class Main {
     // 4방향 dfs 순회
     static void dfs(int x, int y, int depth) {
         if (depth == K) {
-            if (y == 1 && x == C) {
+            if (x == C && y == END_R) {
                 answer++;
             }
             return;
@@ -54,7 +55,7 @@ public class Main {
 
         // 2. dfs
         matrix[R][1] = false;
-        dfs(1, R, 1);
+        dfs(START_C, R, 1);
 
         // 3. 출력
         System.out.println(answer);
