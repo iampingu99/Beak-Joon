@@ -1,28 +1,30 @@
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
+    static final char WOLF = 'v';
+    static final char SHEEP = 'o';
     static final int MAX_SIZE = 250 + 2;
-    static int R;
-    static int C;
+
+    static int R, C; // 3 ≤ R, C ≤ 250
     static char[][] matrix;
-    static int o;
-    static int v;
+    static int sheepCnt, wolfCnt;
 
     // N E S W
     static int[] dx = {1, 0, -1, 0};
     static int[] dy = {0, -1, 0, 1};
 
-    // 4방향 dfs 순회
+    // 4방향 dfs 순회 + 연결된 요소 개수
     static void dfs(int x, int y) {
-        if (matrix[y][x] == 'o') {
-            o++;
+        if (matrix[y][x] == SHEEP) {
+            sheepCnt++;
         }
-        if (matrix[y][x] == 'v') {
-            v++;
+        if (matrix[y][x] == WOLF) {
+            wolfCnt++;
         }
         matrix[y][x] = '#';
         for (int d = 0; d < 4; d++) {
@@ -43,6 +45,10 @@ public class Main {
         C = Integer.parseInt(param[1]);
         matrix = new char[MAX_SIZE][MAX_SIZE];
 
+        Map<Character, Integer> answer = new HashMap<>();
+        answer.put(SHEEP, 0);
+        answer.put(WOLF, 0);
+
         // 1. 2차원 배열 정보 채우기
         for (int i = 1; i <= R; i++) {
             String str = br.readLine();
@@ -52,25 +58,23 @@ public class Main {
         }
 
         // 2. dfs
-        Map<Character, Integer> answer = new HashMap<>();
         for (int i = 1; i <= R; i++) {
             for (int j = 1; j <= C; j++) {
-                if (matrix[i][j] != '#') {
+                char c = matrix[i][j];
+                if (c == SHEEP || c == WOLF) {
                     dfs(j, i);
-                    answer.putIfAbsent('o', 0);
-                    answer.putIfAbsent('v', 0);
-                    if (o > v) {
-                        answer.put('o', answer.get('o') + o);
+                    if (sheepCnt > wolfCnt) {
+                        answer.put(SHEEP, answer.get(SHEEP) + sheepCnt);
                     } else {
-                        answer.put('v', answer.get('v') + v);
+                        answer.put(WOLF, answer.get(WOLF) + wolfCnt);
                     }
-                    o = 0;
-                    v = 0;
+                    sheepCnt = 0;
+                    wolfCnt = 0;
                 }
             }
         }
 
         // 3. 출력
-        System.out.println(answer.get('o') + " " + answer.get('v'));
+        System.out.println(answer.get(SHEEP) + " " + answer.get(WOLF));
     }
 }
