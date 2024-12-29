@@ -1,13 +1,12 @@
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
     static final int MAX_SIZE = 100 + 2;
-    static int N;
-    static int M;
-    static int K;
+
+    static int N, M; // 1 ≤ N, M ≤ 100
+    static int K; // 1 ≤ K ≤ N×M
     static boolean[][] matrix;
     static int count;
 
@@ -15,7 +14,7 @@ public class Main {
     static int[] dx = {0, 1, 0, -1};
     static int[] dy = {-1, 0, 1, 0};
 
-    // 4방향 dfs 순회 + 연결된 요소 개수 찾기
+    // 4방향 dfs 순회 + 연결된 요소 개수
     static void dfs(int x, int y) {
         matrix[y][x] = false;
         count++;
@@ -37,7 +36,9 @@ public class Main {
         N = Integer.parseInt(param[0]);
         M = Integer.parseInt(param[1]);
         K = Integer.parseInt(param[2]);
+        
         matrix = new boolean[MAX_SIZE][MAX_SIZE];
+        int answer = 0;
 
         // 1. 2차원 배열 정보 채우기
         while (K-- > 0) {
@@ -48,7 +49,6 @@ public class Main {
         }
 
         // 2. dfs
-        int answer = 0;
         for (int i = 1; i <= N; i++) {
             for (int j = 1; j <= M; j++) {
                 if (matrix[i][j]) {
