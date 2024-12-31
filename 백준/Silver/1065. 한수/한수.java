@@ -18,11 +18,10 @@ public class Main {
                 answer++;
             } else {
                 String s = String.valueOf(i);
-                int sub = s.charAt(1) - s.charAt(0);
-                for (int j = 2; j < s.length(); j++) {
-                    if (s.charAt(j - 1) + sub != s.charAt(j)) {
-                        break;
-                    }
+                int hun = s.charAt(2);
+                int ten = s.charAt(1);
+                int one = s.charAt(0);
+                if (hun - ten == ten - one) {
                     answer++;
                 }
             }
