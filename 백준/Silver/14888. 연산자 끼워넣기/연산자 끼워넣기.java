@@ -4,14 +4,14 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 
 public class Main {
-    static int N;
-    static int[] nums;
+    static int N; // 2 ≤ N ≤ 11
+    static int[] nums; // 1 ≤ Ai ≤ 100
     static int[] ops;
     static int max = Integer.MIN_VALUE;
     static int min = Integer.MAX_VALUE;
 
-    // 연산자 중에서 N-1 개를 고르는 중복 조합
-    static void combination(int k, int num) {
+    // 연산자 중에서 N-1 개를 고르는 중복 순열
+    static void duplicatePermutation(int k, int num) {
         if (k == N) {
             max = Math.max(max, num);
             min = Math.min(min, num);
@@ -20,7 +20,7 @@ public class Main {
         for (int i = 0; i < ops.length; i++) {
             if (ops[i] > 0) {
                 ops[i]--;
-                combination(k + 1, calc(num, nums[k], i));
+                duplicatePermutation(k + 1, calc(num, nums[k], i));
                 ops[i]++;
             }
         }
@@ -57,8 +57,8 @@ public class Main {
                 .mapToInt(Integer::parseInt)
                 .toArray();
 
-        // 3. combination
-        combination(1, nums[0]);
+        // 3. duplicatePermutation
+        duplicatePermutation(1, nums[0]);
 
         // 4. 출력
         System.out.println(max);
