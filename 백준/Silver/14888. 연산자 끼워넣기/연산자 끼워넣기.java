@@ -1,65 +1,67 @@
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 
 public class Main {
+    static int N;
+    static int[] nums;
+    static int[] ops;
+    static int max = Integer.MIN_VALUE;
+    static int min = Integer.MAX_VALUE;
 
-    public static int N;
-    public static int[] nums;
-    public static int[] operator;
-    public static int max = Integer.MIN_VALUE;
-    public static int min = Integer.MAX_VALUE;
+    // 연산자 중에서 N-1 개를 고르는 중복 조합
+    static void combination(int k, int num) {
+        if (k == N) {
+            max = Math.max(max, num);
+            min = Math.min(min, num);
+            return;
+        }
+        for (int i = 0; i < ops.length; i++) {
+            if (ops[i] > 0) {
+                ops[i]--;
+                combination(k + 1, calc(num, nums[k], i));
+                ops[i]++;
+            }
+        }
+    }
+
+    static int calc(int num1, int num2, int op) {
+        switch (op) {
+            case 0:
+                return num1 + num2;
+            case 1:
+                return num1 - num2;
+            case 2:
+                return num1 * num2;
+            case 3:
+                return num1 / num2;
+            default:
+                return 0;
+        }
+    }
 
     public static void main(String[] args) throws IOException {
+        // 0. 입력 및 초기화
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         N = Integer.parseInt(br.readLine());
+
+        // 1. 숫자 채우기
         nums = Arrays.stream(br.readLine().split(" "))
                 .mapToInt(Integer::parseInt)
                 .toArray();
-        operator = Arrays.stream(br.readLine().split(" "))
+
+        // 2. 연산자 채우기
+        ops = Arrays.stream(br.readLine().split(" "))
                 .mapToInt(Integer::parseInt)
                 .toArray();
-        int[] arr = new int[N-1];
-        permutation(0, arr);
+
+        // 3. combination
+        combination(1, nums[0]);
+
+        // 4. 출력
         System.out.println(max);
         System.out.println(min);
-    }
-
-    public static void permutation(int depth, int[] arr){
-        if(depth == N-1){
-            int result = nums[0];
-            for(int i = 1, j = 0; i<nums.length; i++){
-                switch (arr[j++]){
-                    case 0 : {
-                        result += nums[i];
-                        break;
-                    }
-                    case 1 : {
-                        result -= nums[i];
-                        break;
-                    }
-                    case 2 : {
-                        result *= nums[i];
-                        break;
-                    }
-                    case 3 : {
-                        result /= nums[i];
-                        break;
-                    }
-                };
-            }
-            min = Math.min(min, result);
-            max = Math.max(max, result);
-            return;
-        }
-        for(int i = 0; i<operator.length; i++){
-            if(operator[i] == 0) continue;
-            operator[i] -= 1;
-            arr[depth] = i;
-            permutation(depth + 1, arr);
-            operator[i] += 1;
-        }
     }
 }
