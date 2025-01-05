@@ -1,52 +1,51 @@
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
 public class Main {
+    static int N; // 2 ≤ N ≤ 10
+    static int[][] graph; // 0 ≤ i ≤ 1,000,000
+    static boolean[] visited;
+    static int answer = Integer.MAX_VALUE;
 
-    public static int N;
-    public static int matrix[][];
-    public static boolean visited[];
-    public static int MIN = Integer.MAX_VALUE;
-
-    public static void TSP(int depth, int start, int prev, int sum){
-        if(depth == N){
-            if(matrix[prev][start] != 0) {
-                MIN = Math.min(MIN, sum + matrix[prev][start]);
+    // 조건 경로 경우의 수: 순열 + 최소 비용
+    static void permutation(int u, int k, int[] path, int price) {
+        visited[u] = true;
+        path[k] = u;
+        if (k == N - 1) {
+            if (graph[u][path[0]] > 0) {
+                answer = Math.min(answer, price + graph[u][path[0]]);
             }
+            visited[u] = false;
             return;
         }
-
-        for(int i = 0; i<N; i++){
-            if(visited[i]) continue;
-            visited[i] = true;
-            if (matrix[prev][i] != 0) {
-                TSP(depth + 1, start, i, sum + matrix[prev][i]);
+        for (int v = 0; v < N; v++) {
+            if (!visited[v] && graph[u][v] > 0) {
+                permutation(v, k + 1, path, price + graph[u][v]);
             }
-            visited[i] = false;
         }
+        visited[u] = false;
     }
 
     public static void main(String[] args) throws IOException {
+        // 0. 입력 및 초기화
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine());
-        matrix = new int[N][N];
-        visited = new boolean[N];
 
-        for(int i = 0; i<N; i++){
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            for(int j = 0; j<N; j++){
-                matrix[i][j] = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(br.readLine());
+        graph = new int[N][N];
+
+        // 0-1. 도시 및 비용 입력: 2차원 배열
+        for (int i = 0; i < N; i++) {
+            String[] param = br.readLine().split(" ");
+            for (int j = 0; j < N; j++) {
+                graph[i][j] = Integer.parseInt(param[j]);
             }
         }
 
-        for(int i = 0; i<N; i++){
-            visited[i] = true;
-            TSP(1, i, i, 0);
-        }
+        // 1. dfs graph traversal
+        visited = new boolean[N];
+        permutation(0, 0, new int[N], 0);
 
-        System.out.println(MIN);
+        System.out.println(answer);
     }
 }
