@@ -5,14 +5,16 @@ import java.io.InputStreamReader;
 public class Main {
     static int N; // 2 ≤ N ≤ 100,000
 
-    // 대결하는 라운드: 그룹의 크기를 2의 제곱씩 늘리며 그룹에 포함되는지 확인
+    // 대결하는 라운드: 이겼을 때 새로 받는 번호를 계산
+    // a와 b가 대결한 경우 대결하고 이겼을때 받는 번호는 같다
     static int getRound(int a, int b) {
-        for (int size = 2; ; size *= 2) {
-            for (int start = 1; start <= N; start += size)
-                if (start <= a && b <= start + size - 1)
-                    return (int) (Math.log(size) / Math.log(2));
-            if (size > N) return -1;
+        int round = 0;
+        while (a != b) {
+            a = a / 2 + a % 2;
+            b = b / 2 + b % 2;
+            round++;
         }
+        return round;
     }
 
     public static void main(String[] args) throws IOException {
@@ -26,6 +28,6 @@ public class Main {
 
         // 1. 대결 라운드
         // 2. 출력
-        System.out.println(getRound(Math.min(a, b), Math.max(a, b)));
+        System.out.println(getRound(a, b));
     }
 }
