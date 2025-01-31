@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
@@ -40,8 +39,8 @@ public class Main {
         // 2. 나눠진 두 지역 연결성 검사
         if (isRegionConnected(region1) && isRegionConnected(region2)) {
             // 3. 지역 인구 수 차이 계산 및 갱신
-            int population1 = region1.stream().map(x -> populations[x]).reduce(Integer::sum).get();
-            int population2 = region2.stream().map(x -> populations[x]).reduce(Integer::sum).get();
+            int population1 = region1.stream().mapToInt(x -> populations[x]).sum();
+            int population2 = region2.stream().mapToInt(x -> populations[x]).sum();
             answer = Math.min(answer, Math.abs(population1 - population2));
         }
     }
@@ -51,18 +50,19 @@ public class Main {
         Queue<Integer> queue = new ArrayDeque<>();
         boolean[] visited = new boolean[N + 1];
 
-        int u = component.stream().findAny().get();
+        int u = component.iterator().next();
         queue.offer(u);
+        visited[u] = true;
 
         int count = 0;
         while (!queue.isEmpty()) {
-            int v = queue.poll();
-            if (!visited[v] && component.contains(v)) {
-                for (int i = 1; i <= N; i++) {
-                    if (!visited[i] && component.contains(i) && graph[v][i]) queue.offer(i);
+            u = queue.poll();
+            count++;
+            for (int v : component) {
+                if (!visited[v] && graph[u][v]) {
+                    queue.offer(v);
+                    visited[v] = true;
                 }
-                visited[v] = true;
-                count++;
             }
         }
         return component.size() == count;
