@@ -3,54 +3,49 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-    static final int MAX_SIZE = 10000 + 2;
+    static final char MARK_EMPTY = '.';
 
     static int R; // 1 ≤ R ≤ 10,000
     static int C; // 5 ≤ C ≤ 500
     static char[][] matrix;
-    static boolean[][] visited;
-    static boolean isFind;
-    static int answer;
 
-    // NE E SE
+    // NE E SE: greedy 최선 경로 탐색 순서
     static int[] dy = {-1, 0, 1};
 
-    static void dfs(int x, int y) {
-        if (x == C) {
-            answer++;
-            isFind = true;
-            return;
-        }
+    // 최선 경로로 탐색 가능한 
+    static boolean isConnected(int x, int y) {
+        if (x == C - 1) return true;
 
-        visited[y][x] = true;
-        for (int d = 0; d < dy.length && !isFind; d++) {
+        matrix[y][x] = 'x';
+        for (int d = 0; d < dy.length; d++) {
             int nx = x + 1;
             int ny = y + dy[d];
-            if (!visited[ny][nx] && matrix[ny][nx] != '\u0000' && matrix[ny][nx] != 'x') {
-                dfs(nx, ny);
+            if (ny >= 0 && ny < R && matrix[ny][nx] == MARK_EMPTY) {
+                if (isConnected(nx, ny)) return true;
             }
         }
+        return false;
     }
 
     public static void main(String[] args) throws IOException {
+        // 0. 입력 및 초기화
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         String[] param = br.readLine().split(" ");
         R = Integer.parseInt(param[0]);
         C = Integer.parseInt(param[1]);
 
-        matrix = new char[MAX_SIZE][MAX_SIZE];
-        for (int i = 1; i <= R; i++) {
-            String str = br.readLine();
-            for (int j = 1; j <= C; j++) {
-                matrix[i][j] = str.charAt(j - 1);
-            }
+        // 0-1. 빵집 모습 입력
+        matrix = new char[R][];
+        for (int i = 0; i < R; i++) {
+            matrix[i] = br.readLine().toCharArray();
         }
 
-        visited = new boolean[R+2][C+2];
-        for (int y = 1; y <= R; y++) {
-            isFind = false;
-            dfs(1, y);
+        // 1. 최적 가스관 연결: NE, E, SE 순서로 가스관을 연결
+        // 1-1. 연결 가능한지 확인
+        int answer = 0;
+        for (int y = 0; y < R; y++) {
+            if (isConnected(0, y)) answer++;
         }
 
         System.out.println(answer);
