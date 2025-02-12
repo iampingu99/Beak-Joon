@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -12,9 +13,8 @@ public class Main {
 
         long[] dp = new long[MAX_NUM];
         dp[1] = dp[2] = dp[3] = 1;
-        dp[4] = dp[5] = 2;
-        for (int i = 6; i < MAX_NUM; i++) {
-            dp[i] = dp[i - 1] + dp[i - 5];
+        for (int i = 4; i < MAX_NUM; i++) {
+            dp[i] = dp[i - 2] + dp[i - 3];
         }
 
         T = Integer.parseInt(br.readLine());
