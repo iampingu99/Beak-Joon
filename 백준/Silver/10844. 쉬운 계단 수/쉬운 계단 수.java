@@ -13,8 +13,8 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
 
-        dp = new long[MAX_N][MAX_N];
-        for (int i = 0; i <= 9; i++) {
+        dp = new long[MAX_N][10];
+        for (int i = 0; i < 10; i++) {
             dp[1][i] = 1;
         }
 
