@@ -6,13 +6,13 @@ public class Main {
     static final int MAX_N = 1_000_000 + 1;
     static final int MOD = 15746;
     static int N; // 1 ≤ N ≤ 1,000,000
-    static long[] dp;
+    static int[] dp;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
 
-        dp = new long[MAX_N];
+        dp = new int[MAX_N];
         dp[1] = 1;
         dp[2] = 2;
         for (int i = 3; i <= N; i++) {
