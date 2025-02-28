@@ -16,10 +16,10 @@ public class Main {
     // graph traversal
     static void dfs(int u, List<Integer>[] graph) {
         visited[u] = true;
-        count++;
         for (int v : graph[u]) {
             if (!visited[v]) {
                 dfs(v, graph);
+                count++;
             }
         }
     }
@@ -46,10 +46,10 @@ public class Main {
 
         for (int i = 1; i <= N; i++) {
             visited = new boolean[N + 1];
-            count = 0;
+            count = 1;
             dfs(i, forward);
             dfs(i, backward);
-            System.out.println(N - (count - 1));
+            System.out.println(N - count);
         }
     }
 }
