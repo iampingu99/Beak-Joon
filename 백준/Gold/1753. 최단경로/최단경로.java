@@ -55,12 +55,12 @@ public class Main {
             while (!pq.isEmpty()) {
                 int key = pq.poll().key;
                 for (DirectedEdge e : graph[key]) {
-                    release(e);
+                    relax(e);
                 }
             }
         }
 
-        private void release(DirectedEdge e) {
+        private void relax(DirectedEdge e) {
             int k = e.from;
             int v = e.to;
             int w = e.weight;
