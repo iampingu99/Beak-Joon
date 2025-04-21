@@ -1,18 +1,10 @@
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.List;
 
 public class Main {
-    static int N; // 2 ≤ N(보드 크기) ≤ 100;
-    static int K; // 0 ≤ K(사과 개수) ≤ 100;
-    static int[][] matrix;
-    static List<int[]> apples;
-    static Deque<int[]> ops;
 
     static class State {
         int x, y, d;
@@ -24,11 +16,19 @@ public class Main {
         }
     }
 
+    static final int BLANK = 0;
+    static final int APPLE = 1;
+    static final int SNAKE = 2;
+
+    static int N; // 2 ≤ N(보드 크기) ≤ 100;
+    static int K; // 0 ≤ K(사과 개수) ≤ 100;
+    static int[][] matrix;
+    static final Deque<int[]> ops = new ArrayDeque<>();
+    static final Deque<State> snake = new ArrayDeque<>();
+
     // N E S W
     static int[] dx = {0, 1, 0, -1};
     static int[] dy = {-1, 0, 1, 0};
-
-    static final List<State> snake = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -36,6 +36,7 @@ public class Main {
         N = Integer.parseInt(br.readLine());
         K = Integer.parseInt(br.readLine());
 
+        // 1. 사과 정보 입력:
         matrix = new int[N][N];
         for (int k = 0; k < K; k++) {
             String[] param = br.readLine().split(" ");
@@ -44,43 +45,43 @@ public class Main {
             matrix[y][x] = 1;
         }
 
+        // 2. 방향 전환 정보 입력: 나머지 연산을 사용한 방향 전환을 위한 파싱
         int L = Integer.parseInt(br.readLine());
-        ops = new ArrayDeque<>();
         for (int l = 0; l < L; l++) {
             String[] param = br.readLine().split(" ");
             int x = Integer.parseInt(param[0]) + 1;
-            int c;
-            if (param[1].equals("D")) c = 1;
-            else c = 3;
+            int c = param[1].equals("D") ? 1 : 3;
             ops.offer(new int[]{x, c});
         }
 
+        // 3. 뱀 게임 구현
         int time = 0;
-        matrix[0][0] = 2;
-        snake.add(new State(0, 0, 1));
+        matrix[0][0] = SNAKE;
+        snake.offer(new State(0, 0, 1));
+
         while (true) {
             time++;
-            // 머리
-            State head = snake.get(snake.size() - 1);
-            int d = head.d;
-            if (!ops.isEmpty() && time == ops.peek()[0]) {
-                d = (d + ops.peek()[1]) % 4;
-                ops.poll();
-            }
 
-            int nx = head.x + dx[d];
-            int ny = head.y + dy[d];
-            if (nx < 0 || ny < 0 || nx >= N || ny >= N || matrix[ny][nx] == 2) break;
+            // 3-1. 머리 방향: 현재 머리와 같은 방향 / 전환된 방향
+            State cHead = snake.peekLast();
+            int d = cHead.d;
+            if (!ops.isEmpty() && time == ops.peek()[0]) d = (d + ops.poll()[1]) % 4;
 
-            snake.add(new State(nx, ny, d));
-            // 꼬리
-            if (matrix[ny][nx] == 1) continue;
-            matrix[ny][nx] = 2;
+            // 3-2. 머리 이동: 벽이나 몸에 부딧히면 종료
+            int nx = cHead.x + dx[d];
+            int ny = cHead.y + dy[d];
+            if (nx < 0 || ny < 0 || nx >= N || ny >= N || matrix[ny][nx] == SNAKE) break;
+            snake.offer(new State(nx, ny, d));
 
-            State tail = snake.remove(0);
-            matrix[tail.y][tail.x] = 0;
+            // 3-3. 꼬리 이동: 머리가 이동한 칸에 사과가 아닌 경우 현재 꼬리 제외
+            if (matrix[ny][nx] == APPLE) continue;
+            State pTail = snake.poll();
+            
+            matrix[ny][nx] = SNAKE; // 기존 머리는 몸통
+            matrix[pTail.y][pTail.x] = BLANK; // 현재 꼬리 제외
         }
 
+        // 4. 출력
         System.out.println(time);
     }
 }
