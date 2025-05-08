@@ -1,11 +1,10 @@
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
 public class Main {
-    static int N; // 1 ≤ N ≤ 100,000
+    static int N; // 1 ≤ N(로프 개수) ≤ 100,000
     static int[] arr; // 1 ≤ arr[i] ≤ 10,000
 
     public static void main(String[] args) throws IOException {
@@ -21,8 +20,7 @@ public class Main {
 
         long answer = 0, k = 1;
         for (int i = arr.length - 1; i >= 0; i--) {
-            long w = arr[i] * k++;
-            answer = Math.max(answer, w);
+            answer = Math.max(answer, arr[i] * k++);
         }
         System.out.println(answer);
     }
