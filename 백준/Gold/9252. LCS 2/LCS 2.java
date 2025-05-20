@@ -1,31 +1,39 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class Main {
-
-    static char[] s1; // 1 ≤ s1.length ≤ 1,000
-    static char[] s2; // 1 ≤ s2.length ≤ 1,000
-    static String[] dp;
+    static String str1, str2; // 1 ≤ s1/s2.length ≤ 1,000
+    static int[][] dp;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        s1 = br.readLine().toCharArray();
-        s2 = br.readLine().toCharArray();
+        str1 = br.readLine();
+        str2 = br.readLine();
 
-        dp = new String[s2.length + 1];
-        Arrays.fill(dp, "");
-
-        for (int i = 1; i <= s1.length; i++) {
-            String[] temp = Arrays.copyOf(dp, dp.length);
-            for (int j = 1; j <= s2.length; j++) {
-                if (s1[i - 1] == s2[j - 1]) dp[j] = temp[j - 1] + s1[i - 1];
-                else dp[j] = dp[j - 1].length() > dp[j].length() ? dp[j - 1] : dp[j];
+        dp = new int[str1.length() + 1][str2.length() + 1];
+        
+        for (int i = 1; i <= str1.length(); i++) {
+            for (int j = 1; j <= str2.length(); j++) {
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1] + 1;
+                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
 
-        System.out.println(dp[s2.length].length());
-        System.out.println(dp[s2.length]);
+        StringBuilder sb = new StringBuilder();
+        int x = str2.length(), y = str1.length();
+        while (x > 0 && y > 0) {
+            if (str1.charAt(y - 1) == str2.charAt(x - 1)) {
+                sb.append(str1.charAt(y - 1));
+                x--;
+                y--;
+            } else {
+                if (dp[y - 1][x] > dp[y][x - 1]) y--;
+                else x--;
+            }
+        }
+
+        System.out.println(sb.length());
+        System.out.println(sb.reverse());
     }
 }
