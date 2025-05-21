@@ -1,11 +1,13 @@
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
 public class Main {
+    static final int MAX_SIZE = 100 + 2;
+    static int N, M; // 2 ≤ N(세로 길이), M(가로 길이) ≤ 100
+    static boolean[][] matrix;
 
     static class Node {
         int x, y, dist;
@@ -17,33 +19,24 @@ public class Main {
         }
     }
 
-    static final int MAX_SIZE = 100 + 2;
-
-    static int N, M; // 2 ≤ N(세로), M(가로) ≤ 100
-    static boolean[][] matrix;
-
-    // "한 칸에서 다른 칸으로 이동할 때, 서로 인접한 칸으로만 이동할 수 있다"
-    // N E S W
     static int[] dx = {0, 1, 0, -1};
     static int[] dy = {-1, 0, 1, 0};
 
-    // "(1, 1)에서 출발하여 (N, M)의 위치로 이동할 때 지나야 하는 최소의 칸 수"
-    // shortest-path
-    static int bfs(Node start) {
+    static int bfs(Node u) {
         Queue<Node> queue = new ArrayDeque<>();
-        queue.offer(start);
-        matrix[start.y][start.x] = false;
+        boolean[][] visited = new boolean[MAX_SIZE][MAX_SIZE];
+        queue.offer(u);
+        visited[u.y][u.x] = true;
 
         while (!queue.isEmpty()) {
-            Node curr = queue.poll();
-
+            Node v = queue.poll();
+            if (v.y == N && v.x == M) return v.dist;
             for (int d = 0; d < dx.length; d++) {
-                int nx = curr.x + dx[d];
-                int ny = curr.y + dy[d];
-                if (matrix[ny][nx]) {
-                    if (ny == N && nx == M) return curr.dist + 1;
-                    queue.offer(new Node(nx, ny, curr.dist + 1));
-                    matrix[ny][nx] = false;
+                int nx = v.x + dx[d];
+                int ny = v.y + dy[d];
+                if (!visited[ny][nx] && matrix[ny][nx]) {
+                    queue.offer(new Node(nx, ny, v.dist + 1));
+                    visited[ny][nx] = true;
                 }
             }
         }
@@ -52,22 +45,20 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        
+
         String[] param = br.readLine().split(" ");
         N = Integer.parseInt(param[0]);
         M = Integer.parseInt(param[1]);
 
-        // 1. 미로 입력
         matrix = new boolean[MAX_SIZE][MAX_SIZE];
-        for (int y = 1; y <= N; y++) {
+        for (int i = 1; i <= N; i++) {
             String str = br.readLine();
-            for (int x = 1; x <= M; x++) {
-                matrix[y][x] = str.charAt(x - 1) == '1';
+            for (int j = 1; j <= M; j++) {
+                matrix[i][j] = str.charAt(j - 1) == '1';
             }
         }
 
-        // 2. 최단 거리 탐색: bfs
-        // 3. 출력
         System.out.println(bfs(new Node(1, 1, 1)));
     }
+
 }
