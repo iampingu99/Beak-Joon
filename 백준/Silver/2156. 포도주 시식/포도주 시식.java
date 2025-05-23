@@ -6,7 +6,7 @@ public class Main {
     static final int MAX_N = 10_000 + 1;
     static int N; // 1 ≤ n ≤ 10,000
     static int[] nums;
-    static long[] dp;
+    static int[] dp;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,7 +17,7 @@ public class Main {
             nums[i] = Integer.parseInt(br.readLine());
         }
 
-        dp = new long[MAX_N];
+        dp = new int[MAX_N];
         dp[0] = 0;
         dp[1] = nums[1];
         dp[2] = nums[1] + nums[2];
