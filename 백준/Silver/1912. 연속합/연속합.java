@@ -9,20 +9,15 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
         N = Integer.parseInt(br.readLine());
         String[] param = br.readLine().split(" ");
+        
+        int answer = Integer.MIN_VALUE;
         dp = new int[N + 1];
         for (int i = 1; i <= N; i++) {
             int num = Integer.parseInt(param[i - 1]);
-            dp[i] = dp[i - 1] + num;
-        }
-
-        int answer = Integer.MIN_VALUE;
-        int min = 0;
-        for (int i = 1; i <= N; i++) {
-            answer = Math.max(answer, dp[i] - min);
-            min = Math.min(dp[i], min);
+            dp[i] = Math.max(dp[i - 1] + num, num);
+            answer = Math.max(answer, dp[i]);
         }
 
         System.out.println(answer);
