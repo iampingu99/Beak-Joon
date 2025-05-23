@@ -1,13 +1,15 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 
 public class Main {
     static int N;
     static int[] A;
-    static ArrayList<Integer>[] dp;
+    static int[] dp;
+    static int answer;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,31 +18,28 @@ public class Main {
         A = Arrays.stream(br.readLine().split(" "))
                 .mapToInt(Integer::parseInt)
                 .toArray();
-        dp = new ArrayList[N];
-        for (int i = 0; i < N; i++) {
-            dp[i] = new ArrayList<>();
-        }
 
+        dp = new int[N];
         for (int i = 0; i < N; i++) {
-            int target = i;
+            dp[i] = 1;
             for (int j = i; j >= 0; j--) {
-                if (A[i] > A[j]) {
-                    if (dp[target].size() < dp[j].size()) target = j;
-                }
+                if (A[i] > A[j]) dp[i] = Math.max(dp[i], dp[j] + 1);
             }
-            dp[i].addAll(dp[target]);
-            dp[i].add(A[i]);
+            answer = Math.max(answer, dp[i]);
         }
 
-        int maxIdx = 0;
-        for (int i = 0; i < N; i++) {
-            if (dp[maxIdx].size() < dp[i].size()) maxIdx = i;
+        Deque<Integer> lis = new ArrayDeque<>();
+        for (int i = N - 1, j = answer; i >= 0; i--) {
+            if (dp[i] == j) {
+                lis.offerFirst(A[i]);
+                j--;
+            }
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append(dp[maxIdx].size()).append("\n");
-        dp[maxIdx].forEach(i -> sb.append(i).append(" "));
+        lis.forEach(i -> sb.append(i).append(" "));
+
+        System.out.println(answer);
         System.out.println(sb);
     }
-
 }
