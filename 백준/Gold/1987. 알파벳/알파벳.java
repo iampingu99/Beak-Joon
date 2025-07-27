@@ -5,56 +5,48 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Main {
-    static int MAX_SIZE = 20 + 2;
-
-    static int R, C; // 1 ≤ R, C ≤ 20
+    static final int MAX_PATH = 26; // 알파벳 최대 개수
+    static int R, C; // 1 ≤ R,C ≤ 20
     static char[][] matrix;
-    static boolean[][] visited;
     static int answer;
 
-    // N E S W
     static int[] dx = {0, 1, 0, -1};
     static int[] dy = {-1, 0, 1, 0};
 
-    static void dfs(int x, int y, Set<Character> path) {
-        visited[y][x] = true;
+    static void dfs(int x, int y, Set<Character> path, int count) {
+        if (answer == MAX_PATH) return;
         path.add(matrix[y][x]);
 
-        for (int d = 0; d < 4; d++) {
+        for (int d = 0; d < dx.length; d++) {
             int nx = x + dx[d];
             int ny = y + dy[d];
-            if (matrix[ny][nx] != '\u0000' && !visited[ny][nx] && !path.contains(matrix[ny][nx])) {
-                dfs(nx, ny, path);
+            if (nx >= 0 && ny >= 0 && nx < C && ny < R &&
+                    !path.contains(matrix[ny][nx])) {
+                dfs(nx, ny, path, count + 1);
+
             }
         }
-        visited[y][x] = false;
-        answer = Math.max(answer, path.size());
+
+        answer = Math.max(answer, count);
         path.remove(matrix[y][x]);
     }
 
     public static void main(String[] args) throws IOException {
-        // 0. 입력 및 초기화
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         String[] param = br.readLine().split(" ");
         R = Integer.parseInt(param[0]);
         C = Integer.parseInt(param[1]);
 
-        matrix = new char[MAX_SIZE][MAX_SIZE];
-        visited = new boolean[MAX_SIZE][MAX_SIZE];
-
-        // 1. 2차원 배열 정보 채우기
-        for (int i = 1; i <= R; i++) {
-            String str = br.readLine();
-            for (int j = 1; j <= C; j++) {
-                matrix[i][j] = str.charAt(j - 1);
-            }
+        // 0. 2차원 배열 입력
+        matrix = new char[R][C];
+        for (int y = 0; y < R; y++) {
+            matrix[y] = br.readLine().toCharArray();
         }
 
-        // 2. dfs
-        dfs(1, 1, new HashSet<>());
+        // 1. dfs: O(N^2)
+        dfs(0, 0, new HashSet<>(), 1);
 
-        // 3. 출력
         System.out.println(answer);
     }
 }
