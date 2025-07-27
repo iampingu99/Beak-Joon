@@ -5,38 +5,40 @@ import java.io.InputStreamReader;
 public class Main {
     static final int MAX_SIZE = 500 + 2;
 
-    static int M, N; // 1 ≤ M, N ≤ 500
-    static int[][] matrix; // 1 ≤ i ≤ 10,000
+    static int M, N; // 1 ≤ M(세로), N(가로) ≤ 500
+    static int[][] matrix; // 1 ≤ matrix[i] ≤ 10,000
+    static boolean[][] visited;
     static int[][] dp;
+    static long count; // 0 ≤ H ≤ 1,000,000,000
 
     // N E S W
     static int[] dx = {0, 1, 0, -1};
     static int[] dy = {-1, 0, 1, 0};
 
-    // memoization + dfs
-    // dp[y][x] : (y, x) 에서 도착점까지의 경로 수
-    static int dfs(int x, int y) {
-        if (x == N && y == M) {
-            return 1;
-        }
-        if (dp[y][x] != -1) {
-            return dp[y][x];
-        }
+    // matrix all-path: memoization + dfs
+    static int allPath(int x, int y) {
+        // 종료 지점
+        if (x == N && y == M) return 1;
+
+        // 탐색한 경우
+        if (dp[y][x] != -1) return dp[y][x];
+
+        // 탐색하지 않은 경우
         dp[y][x] = 0;
-        for (int d = 0; d < 4; d++) {
+        for (int d = 0; d < dx.length; d++) {
             int nx = x + dx[d];
             int ny = y + dy[d];
-            if (matrix[ny][nx] < matrix[y][x] && matrix[ny][nx] > 0) {
-                dp[y][x] += dfs(nx, ny);
+            if (matrix[ny][nx] > 0 && matrix[y][x] > matrix[ny][nx]) {
+                // 반환된 결과 누적
+                dp[y][x] += allPath(nx, ny);
             }
         }
+        // 상위 호출로 반환
         return dp[y][x];
     }
 
     public static void main(String[] args) throws IOException {
-        // 0. 입력 및 초기화
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
         String[] param = br.readLine().split(" ");
         M = Integer.parseInt(param[0]);
         N = Integer.parseInt(param[1]);
@@ -44,18 +46,16 @@ public class Main {
         matrix = new int[MAX_SIZE][MAX_SIZE];
         dp = new int[MAX_SIZE][MAX_SIZE];
 
-        // 0-1. 지도 입력: 2차원 배열
-        // 0-2. memoization
-        for (int i = 1; i <= M; i++) {
+        // 1. 미로 입력
+        // 2. 메모이제이션 초기화
+        for (int y = 1; y <= M; y++) {
             param = br.readLine().split(" ");
-            for (int j = 1; j <= N; j++) {
-                matrix[i][j] = Integer.parseInt(param[j - 1]);
-                dp[i][j] = -1;
+            for (int x = 1; x <= N; x++) {
+                matrix[y][x] = Integer.parseInt(param[x - 1]);
+                dp[y][x] = -1;
             }
         }
 
-        // 1. matrix traversal dfs + memoization
-        // 2. 출력
-        System.out.println(dfs(1, 1));
+        System.out.println(allPath(1, 1));
     }
 }
