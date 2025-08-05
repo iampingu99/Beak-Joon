@@ -13,28 +13,30 @@ public class Main {
         N = Integer.parseInt(param[0]);
         H = Integer.parseInt(param[1]);
 
+        // 0. input
         bottom = new int[H + 1];
         top = new int[H + 1];
-        for (int i = 0; i < N; i++) {
-            int h = Integer.parseInt(br.readLine());
-            if (i % 2 == 0) bottom[h]++;
-            else top[h]++;
+        for (int i = 0; i < N; i += 2) {
+            bottom[Integer.parseInt(br.readLine())]++;
+            top[Integer.parseInt(br.readLine())]++;
         }
 
+        // 1. prefix/accumulate sum
         for (int i = H; i > 0; i--) {
             bottom[i - 1] += bottom[i];
             top[i - 1] += top[i];
         }
-        
-        int[] crashes = new int[N + 1];
 
-        int minCrash = Integer.MAX_VALUE;
-        for (int i = 1; i <= H; i++) {
-            int crash = bottom[i] + top[H - (i - 1)];
-            crashes[crash]++;
-            minCrash = Math.min(minCrash, crash);
+        // 2. find (minimum hit count)/(same height count)
+        int minHit = N, count = 0;
+        for (int h = 1; h <= H; h++) {
+            int hit = bottom[h] + top[H - (h - 1)];
+            if (minHit > hit) {
+                minHit = hit;
+                count = 1;
+            } else if (minHit == hit) count++;
         }
 
-        System.out.println(minCrash + " " + crashes[minCrash]);
+        System.out.println(minHit + " " + count);
     }
 }
