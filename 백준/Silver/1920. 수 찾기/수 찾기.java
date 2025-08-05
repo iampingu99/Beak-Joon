@@ -6,18 +6,18 @@ import java.util.Arrays;
 public class Main {
     static int N; // 1 ≤ N(수열 길이) ≤ 100,000
     static int M; // 1 ≤ M(탐색 횟수) ≤ 100,000
-    static int[] nums;
+    static int[] nums; // -2^31 ≤ nums[i] ≤ 2^31
 
     // binary search
-    static boolean isExists(int key) {
+    static int isExists(int key) {
         int lo = 0, hi = nums.length - 1;
         while (lo <= hi) {
             int mid = lo + (hi - lo) / 2;
             if (key < nums[mid]) hi = mid - 1;
             else if (key > nums[mid]) lo = mid + 1;
-            else return true;
+            else return 1;
         }
-        return false;
+        return 0;
     }
 
     public static void main(String[] args) throws IOException {
@@ -33,10 +33,10 @@ public class Main {
 
         Arrays.sort(nums);
 
-        // 1. find
+        // 1. find + map + collect
         Arrays.stream(br.readLine().split(" "))
                 .mapToInt(Integer::parseInt)
-                .map(v -> isExists(v) ? 1 : 0)
+                .map(v -> isExists(v))
                 .forEach(v -> sb.append(v).append("\n"));
 
         System.out.println(sb);
