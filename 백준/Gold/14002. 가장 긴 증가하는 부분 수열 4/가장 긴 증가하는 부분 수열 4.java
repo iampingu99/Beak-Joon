@@ -6,38 +6,37 @@ import java.util.Arrays;
 import java.util.Deque;
 
 public class Main {
-    static int N;
-    static int[] A;
-    static int[] dp;
-    static int answer;
+    static int N; // 1 ≤ N ≤ 1,000
+    static int[] nums, dp; // 1 ≤ Ai ≤ 1,000
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
 
         N = Integer.parseInt(br.readLine());
-        A = Arrays.stream(br.readLine().split(" "))
+        nums = Arrays.stream(br.readLine().split(" "))
                 .mapToInt(Integer::parseInt)
                 .toArray();
 
         dp = new int[N];
+        int answer = 0;
         for (int i = 0; i < N; i++) {
             dp[i] = 1;
             for (int j = i; j >= 0; j--) {
-                if (A[i] > A[j]) dp[i] = Math.max(dp[i], dp[j] + 1);
+                if (nums[i] > nums[j]) dp[i] = Math.max(dp[i], dp[j] + 1);
             }
             answer = Math.max(answer, dp[i]);
         }
 
-        Deque<Integer> lis = new ArrayDeque<>();
-        for (int i = N - 1, j = answer; i >= 0; i--) {
+        Deque<Integer> deque = new ArrayDeque<>();
+        for (int i = N - 1, j = answer; i >= 0 && j >= 0; i--) {
             if (dp[i] == j) {
-                lis.offerFirst(A[i]);
+                deque.offerFirst(nums[i]);
                 j--;
             }
         }
 
-        StringBuilder sb = new StringBuilder();
-        lis.forEach(i -> sb.append(i).append(" "));
+        deque.forEach(v -> sb.append(v).append(" "));
 
         System.out.println(answer);
         System.out.println(sb);
